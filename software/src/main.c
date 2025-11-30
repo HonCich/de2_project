@@ -10,18 +10,24 @@
 #include <stdio.h>          // C library. Needed for `sprintf`
 #include <oled.h>
 #include "gpio.h"
+#include <util/delay.h>  // Functions for busy-wait delay loops
 
 #define DHT_ADR 0x5c
 #define DHT_HUM_MEM 0
 #define DHT_TEMP_MEM 2
 
-#define MQ 1
-#define MQ_D PD2 
+#define MQ 0
+#define MQ_D PD2
+
+
+#define GP_LED_PIN  PB0
+#define GP_ADC_CH   1 
 
 volatile uint8_t flag_update_uart = 0;
 volatile uint8_t dht12_values[4];
 volatile float temp = 0.0;
 volatile float hum = 0.0;
+volatile uint16_t GP_read = 0;
 
 // -- Function definitions ---------------------------------
 /*
@@ -36,10 +42,14 @@ int main(void)
     uint16_t val = 0;
     char str_temp[22];
     char str_hum[22];
-    char str_CO2[30];
+    char str_CO2[50];
+    char str_GP[30];
 
     adc_init();
     twi_init();
+
+    gpio_mode_output(&DDRB, GP_LED_PIN);
+    gpio_write_high(&PORTB, GP_LED_PIN);
     
     sei(); // Interrupts must be enabled, bacause of `uart_puts()` need interrupts
 
@@ -52,6 +62,9 @@ int main(void)
     oled_charMode(NORMALSIZE);
     tim1_ovf_1sec();
     tim1_ovf_enable();
+ 
+    tim2_ovf_16ms();      
+    tim2_ovf_enable();   
 
     // Infinite empty loop
     while (1)
@@ -67,20 +80,29 @@ int main(void)
             float rs = getResistance(5.0f, v_meas); //5.0f=Vcc
             float ppm_corr = getCorrectedPPM(25.0f, 50.0f, rs); //default temp, edit
 
-            
+            float GP_U = GP_read * (5.0f / 1023.0f);
+            float dust = 1000*(GP_U-0.1f) /5.8f;
+            if (dust < 0) dust = 0;
 
             //sprintf(str_temp, "Teplota: %4.1f °C", temp); 
             //sprintf(str_hum, "Vlhkost: %4.1f %%", hum);
-            if (gpio_read(&PIND, MQ_D) == 0)
-                {
-                sprintf(str_CO2, "rs %6.1f, v_meas %4.2f, %4d , %4.1f ppm\tCO2!\r\n", rs,v_meas,val, ppm_corr);
-                }
-            else{
-                sprintf(str_CO2, "rs %6.1f, v_meas %4.2f, %4d , %4.1f ppm\r\n", rs,v_meas,val, ppm_corr);
-                }
+            
+            if( gpio_read(&PIND, MQ_D)==0)
+            {
+                uart_puts("CO2 ALERT!\r\n");
+            }
+
+            sprintf(str_CO2, "V=%.3f  Rs=%.1f  corr=%.1f ", v_meas, rs, ppm_corr);
+                        
+            sprintf(str_GP, "U=%5.3f, dust %4.2f", GP_U, dust);
+
             //uart_puts(str_temp);
             //uart_puts(str_hum);
             uart_puts(str_CO2);
+            uart_puts("\r\n");
+            uart_puts(str_GP);
+            uart_puts("\r\n");
+            uart_puts("\r\n");
 
             oled_gotoxy(0, 1);
             oled_puts(str_temp);
@@ -110,4 +132,30 @@ int main(void)
 ISR(TIMER1_OVF_vect)
 {
     flag_update_uart = 1;
+}
+
+ISR(TIMER2_OVF_vect)
+{
+    static uint8_t state = 0;
+
+    
+        if(state == 0){
+            
+            gpio_write_low(&PORTB, GP_LED_PIN);
+
+            
+            TCNT2 = 252;      
+            state = 1;
+    }
+    else{
+            // 280 us — změřit ADC
+            GP_read = adc_read(GP_ADC_CH);
+
+            gpio_write_high(&PORTB, GP_LED_PIN);
+            TCNT2 = 118;      
+            state = 0;
+           
+    
+    }
+
 }
