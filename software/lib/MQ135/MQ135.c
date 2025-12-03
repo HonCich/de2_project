@@ -17,7 +17,7 @@ v1.0 - First release
 #include "MQ135.h"
 #include <math.h>
 
-float RZERO = 105000;//28000.0f;
+float RZERO = 28000;//28000.0f;
 /**************************************************************************/
 /*!
 @brief  Default constructor

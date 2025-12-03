@@ -44,6 +44,7 @@ int main(void)
     char str_hum[22];
     char str_CO2[50];
     char str_GP[30];
+    char str_CO2_allert[30];
 
     adc_init();
     twi_init();
@@ -84,34 +85,46 @@ int main(void)
             float dust = 1000*(GP_U-0.1f) /5.8f;
             if (dust < 0) dust = 0;
 
-            //sprintf(str_temp, "Teplota: %4.1f °C", temp); 
-            //sprintf(str_hum, "Vlhkost: %4.1f %%", hum);
+            sprintf(str_temp, "Teplota: %4.1f °C", temp); 
+            sprintf(str_hum, "Vlhkost: %4.1f %%", hum);
             
             if( gpio_read(&PIND, MQ_D)==0)
             {
+                sprintf(str_CO2_allert, "CO2 ALERT!");
                 uart_puts("CO2 ALERT!\r\n");
+            }else{
+                sprintf(str_CO2_allert, "             ");
             }
 
-            sprintf(str_CO2, "V=%.3f  Rs=%.1f  corr=%.1f ", v_meas, rs, ppm_corr);
+            sprintf(str_CO2, "CO2 = %.1f ppm", ppm_corr);
+            //sprintf(str_CO2, "V=%.3f  Rs=%.1f  corr=%.1f ", v_meas, rs, ppm_corr);
                         
-            sprintf(str_GP, "U=%5.3f, dust %4.2f", GP_U, dust);
+            sprintf(str_GP, "Dust = %4.2f ug/m3", dust);
+            //sprintf(str_GP, "U=%5.3f, dust %4.2f", GP_U, dust);
 
             //uart_puts(str_temp);
             //uart_puts(str_hum);
+            /*
             uart_puts(str_CO2);
             uart_puts("\r\n");
             uart_puts(str_GP);
             uart_puts("\r\n");
-            uart_puts("\r\n");
+            uart_puts("\r\n"); */
 
             oled_gotoxy(0, 1);
             oled_puts(str_temp);
             oled_display();
-            oled_gotoxy(0, 3);
+            oled_gotoxy(0, 2);
             oled_puts(str_hum);
             oled_display();
-            oled_gotoxy(0, 4);
+            oled_gotoxy(0, 3);
             oled_puts(str_CO2);
+            oled_display();
+            oled_gotoxy(0, 4);
+            oled_puts(str_GP);
+            oled_display();
+            oled_gotoxy(0, 5);
+            oled_puts(str_CO2_allert);
             oled_display();
 
             // Do not print it again and wait for the new data
