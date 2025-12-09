@@ -6,7 +6,7 @@
 2. Pavel Horský (zodpovědný za měření CO2 a prachových částic)
 
 ## Abstrakt  
-V tomto projektu jsme se zabývali naprogramováním mikrokontroleru obsluhující několik periferií. Konkrétním cílem bylo měření kvality ovzduší jako je teplota, vlhkost, obsah COměřicí zařízení, které monitoruje vlastnosti vzduchu pomocí několika senzorů a prochových částic. Uživateli jsou následně data přehledně prezentována na displeji.
+V tomto projektu jsme se zabývali programováním mikrokontroleru obsluhujícího několik periferií. Konkrétním cílem bylo měření kvality ovzduší v místnosti. Mezi měřené veličiny patřila teplota, vlhkost, obsah CO2 a koncetrace prachových částic. Naměřená data jsou následně uživateli data přehledně prezentována na displeji.
 
 ---
 ## Měřené parametry  
@@ -28,61 +28,60 @@ V tomto projektu jsme se zabývali naprogramováním mikrokontroleru obsluhujíc
 
 ---
 ## Kompletní zapojení mikrokontroleru s periferiemi
-![](celkove_zapojeni_foto.jpg)
+![](assets/celkove_zapojeni_foto.jpg)
 
 ### Schéma zapojení
-![](schema.jpg)
+![](assets/schema.jpg)
 
 ---
 ## Popis použitého hardwaru  
 ### Arduino UNO
 Jedná se o mikrokontroler s procesorem ATmega328P pracující s 8bitovou architekturou na maximální frekvenci 16 MHz.
-![](arduino_pinout.jpg)
+![](assets/arduino_pinout.jpg)
 
 ### DHT12  
-Digitální senzor poskytující údaje o teplotě a vlhkosti pomocí sběrnice I2C...  
-
+Digitální senzor poskytující údaje o teplotě v rozmezí od 20 do 60 °C s přesností 0.5 % a vlhkosti v rozmezí od 20 do 95 % s přesností 5 %. Přesnost měření vlhkosti je ale závislá na vlhkosti samotné a na teplotě (přesnější data uvedena v datasheetu).
 
 
 ### MG135  
 MQ-135 je plynový senzor určený k detekci různých škodlivých plynů, jako je amoniak, oxidy dusíku, benzen, kouř, alkohol, CO₂... Pracuje na principu změny odporu materiálu v závislosti na koncentraci plynů ve vzduchu, není tedy jednoduše určitelné, o jaký typ plynu se jedná. Modul umožňuje jak analogové měření aktuální koncentrace plynů na odporovém děliči, tak i digitální varování přes zabudovaný komparátor s nastavitelnou komparační úrovní. Jeho nevýhodou pro testování je nutnost předehřívání, podle výrobce 24 h. Na následujícím obrázku je možné vidět zapojení modulu pro MQ135.
 
-![](MQ-135-schematic-diagram.png)
+![](assets/MQ-135-schematic-diagram.png)
 
 Jak již bylo zmíněno, na digitálním pinu je možné snímat hodnotu na výstupu komparátoru, pro nízkou úroveň je koncentrace překročena a rozsvítí se i zabudovaná LED dioda.
 Pro možnost přesnějšího snímání koncentrace plynů slouží analogový výstup, na kterém je snímáno napětí UL na zátěžném odporu RL a z něj dopočítáván snímací odpor RS.
 
-![](MQ_R.jpg)
+![](assets/MQ_R.jpg)
 
 Koncentrace plynů se určí jako poměr aktuálního odporu rezistoru Rs k referenční hodnotě získané po nahřátí modulu ve známé koncentraci plynů. Jako reference byl brán venkovní vzduch s průměrnou lpncentrací 400 ppm CO2. Na následujících grafech je možné vidět závislost na koncentraci plynů a na teplotě.
 
-![](MQ_ppm.jpg)
+![](assets/MQ_ppm.jpg)
 
-![](MQ_temp.jpg)
+![](assets/MQ_temp.jpg)
 
 Pro výpočet byla použita knihovna od G.Krocker v jazyce c++, která byla upravena do jazyka c.
 
 ### GP2Y10  
 GP2Y10 je prachový sensor s optickým snímáním. Na jedné straně vysílá infračervené záření a na druhé snímá jeho intenzitu na fotodiodě a následně ji zesílí pomocí operačního zesilovače. Zapojení je možné vidět na následujícím obrázku
 
-![](GP_schema.jpg)
+![](assets/GP_schema.jpg)
 
 Modul vyžaduje PWD modulovaný signál pro řízení LED o přesně daných parametrech. Délka pulzu 0,32 ms a délka periody 10 ms viz následující obrázek. Protože je dioda velice rychle spínána, pro vyhlazení napájení je přidán kapacitor s nabíjecím rezistorem. Z tohoto důvodu je LED řízena PNP tranzistorem, což znamená, že dioda sepne pro nízkou úroveň řídícího signálu, což je inverze ukázkového signálu z technické dokumentace.
 
-![](GP_LED.jpg)
+![](assets/GP_LED.jpg)
 
 Po sepnutí led je nutné chvíli počkat, a v čase 0,28 ms od sepnutí LED přečíst analogový signál zesílený operačním zesilovačem.
 
-![](GP_amp.jpg)
+![](assets/GP_amp.jpg)
 
 Závislost napětí na prašnosti byla aproximována pouze lineární část přímkou.
 
-![](GP_graph.jpg)
+![](assets/GP_graph.jpg)
 
 
 
 ### OLED displej 
-
+OLED display s bílým podsvícením o velikosti 128x64 bodů a úhlopříčce 1,3". Samotný displej je také doplněn o driver umožňující komunikaci s displejem pomocí I2C.
 
 ## Software
 
@@ -90,6 +89,8 @@ Závislost napětí na prašnosti byla aproximována pouze lineární část př
 ## Reference
 
 https://www.laskakit.cz/user/related_files/mq135.pdf
+
+https://robototehnika.ru/file/DHT12.pdf
 
 https://github.com/GeorgK/MQ135/blob/master/README.md
 
