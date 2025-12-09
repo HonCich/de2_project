@@ -1,12 +1,12 @@
 /**************************************************************************/
 /*!
 @file     MQ135.h
-@author   G.Krocker (Mad Frog Labs)
+@brief    Header file for MQ135 gas sensor library
+@author   G.Krocker (Mad Frog Labs), modifications by P. Horsky
 @license  GNU GPLv3
 
 First version of an Arduino Library for the MQ135 gas sensor
-TODO: Review the correction factor calculation. This currently relies on
-the datasheet but the information there seems to be wrong.
+
 
 @section  HISTORY
 
@@ -20,8 +20,10 @@ v1.0 - First release
 
 /// The load resistance on the board
 #define RLOAD 20000
+
 /// Calibration resistance at atmospheric CO2 level
 extern float RZERO;
+
 /// Parameters for calculating ppm of CO2 from sensor resistance
 #define PARA 400
 #define PARB 2.769034857
