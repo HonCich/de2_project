@@ -85,6 +85,7 @@ OLED displej s bílým podsvícením o velikosti 128x64 bodů a úhlopříčce 1
 
 ## Software
 
+![](assets/Main.png)
  
 ## Reference
 
