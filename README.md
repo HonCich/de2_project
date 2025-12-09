@@ -81,7 +81,7 @@ Závislost napětí na prašnosti byla aproximována pouze lineární část př
 
 
 ### OLED displej 
-OLED display s bílým podsvícením o velikosti 128x64 bodů a úhlopříčce 1,3". Samotný displej je také doplněn o driver umožňující komunikaci s displejem pomocí I2C.
+OLED displej s bílým podsvícením o velikosti 128x64 bodů a úhlopříčce 1,3". Samotný displej je také doplněn o driver umožňující komunikaci s displejem pomocí I2C.
 
 ## Software
 
