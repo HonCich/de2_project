@@ -6,7 +6,7 @@
 2. Pavel Horský (zodpovědný za měření CO2 a prachových částic)
 
 ## Abstrakt  
-V tomto projektu jsme se zabývali naprogramováním mikrokontroleru obsluhující několik periferií. Konkrétním cílem bylo měření kvality ovzduší jako je teplota, vlhkost, obsah COměřicí zařízení, které monitoruje vlastnosti vzduchu pomocí několika senzorů a prochových částic. Uživateli jsou následně data přehledně prezentována na displeji.
+V tomto projektu jsme se zabývali programováním mikrokontroleru obsluhujícího několik periferií. Konkrétním cílem bylo měření kvality ovzduší v místnosti. Mezi měřené veličiny patřila teplota, vlhkost, obsah CO2 a koncetrace prachových částic. Naměřená data jsou následně uživateli data přehledně prezentována na displeji.
 
 ---
 ## Měřené parametry  
