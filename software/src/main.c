@@ -74,13 +74,20 @@ int main(void)
             temp = dht12_values[2]+0.1*dht12_values[3];
             hum = dht12_values[0]+0.1*dht12_values[1];
 
+            /* Read MQ135 ADC value */
             val = adc_read(MQ);
-            float v_meas = (5 * (float)val) / 1023.0f;
-            float rs = getResistance(5.0f, v_meas); //5.0f=Vcc
-            float ppm_corr = getCorrectedPPM(temp, hum, rs); //default temp, edit
+            /* Convert ADC value to voltage (V) */
+            float v_meas = (5 * (float)val) / 1023.0f;  
+            /* Calculate sensor resistance in Ohms */
+            float rs = getResistance(5.0f, v_meas); //5V supply
+            /* Compute CO2 concentration corrected for temperature and humidity */
+            float ppm_corr = getCorrectedPPM(temp, hum, rs);
 
+            /* Read dust sensor and convert to voltage */
             float GP_U = GP_read * (5.0f / 1023.0f);
+            /* Convert voltage to dust concentration (ug/m3) */
             float dust = 1000*(GP_U-0.1f) /5.8f;
+            /* Prevent negative dust values */
             if (dust < 0) dust = 0;
 
             sprintf(str_temp, "Teplota: %4.1f °C ", temp); 

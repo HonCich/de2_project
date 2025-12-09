@@ -1,7 +1,8 @@
 /**************************************************************************/
 /*!
-@file     MQ135.cpp
-@author   G.Krocker (Mad Frog Labs)
+@file     MQ135.c
+@brief    Implementation file for the MQ135 gas sensor library
+@author   G.Krocker (Mad Frog Labs), modifications by P. Horsky
 @license  GNU GPLv3
 
 First version of an Arduino Library for the MQ135 gas sensor
@@ -17,14 +18,9 @@ v1.0 - First release
 #include "MQ135.h"
 #include <math.h>
 
-float RZERO = 28000;//28000.0f;
-/**************************************************************************/
-/*!
-@brief  Default constructor
+/*! @brief Default RZero calibration value at atmospheric CO2 level (Ohm) */
 
-@param[in] pin  The analog input pin for the readout of the sensor
-*/
-/**************************************************************************/
+float RZERO = 28000;
 
 /**************************************************************************/
 /*!
@@ -44,8 +40,9 @@ float getCorrectionFactor(float t, float h)
 /**************************************************************************/
 /*!
 @brief  Get the resistance of the sensor, ie. the measurement value
-
-@return The sensor resistance in kOhm
+@param[in] vcc   Supply voltage
+@param[in] vout  Sensor analog output voltage
+@return The sensor resistance in Ohm
 */
 /**************************************************************************/
 float getResistance(float vcc, float vout)
@@ -60,8 +57,9 @@ float getResistance(float vcc, float vout)
 
 @param[in] t  The ambient air temperature
 @param[in] h  The relative humidity
+@param[in] rs   Sensor resistance
 
-@return The corrected sensor resistance kOhm
+@return The corrected sensor resistance Ohm
 */
 /**************************************************************************/
 float getCorrectedResistance(float t, float h, float rs)
@@ -74,6 +72,7 @@ float getCorrectedResistance(float t, float h, float rs)
 /*!
 @brief  Get the ppm of CO2 sensed (assuming only CO2 in the air)
 
+@param[in] rs   Sensor resistance
 @return The ppm of CO2 in the air
 */
 /**************************************************************************/
@@ -89,6 +88,7 @@ float getPPM(float rs)
 
 @param[in] t  The ambient air temperature
 @param[in] h  The relative humidity
+@param[in] rs   Sensor resistance
 
 @return The ppm of CO2 in the air
 */
@@ -102,8 +102,8 @@ float getCorrectedPPM(float t, float h, float rs)
 /**************************************************************************/
 /*!
 @brief  Get the resistance RZero of the sensor for calibration purposes
-
-@return The sensor resistance RZero in kOhm
+@param[in] rs   Sensor resistance
+@return The sensor resistance RZero in Ohm
 */
 /**************************************************************************/
 float getRZero(float rs)
@@ -118,8 +118,9 @@ float getRZero(float rs)
 
 @param[in] t  The ambient air temperature
 @param[in] h  The relative humidity
+@param[in] rs   Sensor resistance
 
-@return The corrected sensor resistance RZero in kOhm
+@return The corrected sensor resistance RZero in Ohm
 */
 /**************************************************************************/
 float getCorrectedRZero(float t, float h, float rs)
