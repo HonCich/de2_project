@@ -149,20 +149,34 @@ ISR(TIMER1_OVF_vect)
     flag_update_uart = 1;
 }
 
+
+/**
+ * @brief  Timer2 overflow interrupt for dust sensor sampling
+ *
+ * This ISR generates the LED control pulses required for the dust sensor.
+ * On the first state it pulls the LED low and schedules a short delay.
+ * On the second state it performs the ADC measurement and turns the LED off.
+ */
+
 ISR(TIMER2_OVF_vect)
 {
     static uint8_t state = 0;
     if(state == 0){
+        /* Turn LED on (active low) */
         gpio_write_low(&PORTB, GP_LED_PIN);
 
+        /* Delay before sampling */
         TCNT2 = 252;      
         state = 1;
     }
     else{
-        // 280 us — změřit ADC
+        /* Sample dust sensor after LED-on interval */
         GP_read = adc_read(GP_ADC_CH);
 
+        /* Turn LED off, adc_read() took some time */
         gpio_write_high(&PORTB, GP_LED_PIN);
+
+        /* Delay before next LED cycle */
         TCNT2 = 118;      
         state = 0;
     }
