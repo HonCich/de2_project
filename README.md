@@ -43,7 +43,7 @@ Jedná se o mikrokontroler s procesorem ATmega328P pracující s 8bitovou archit
 Digitální senzor poskytující údaje o teplotě v rozmezí od 20 do 60 °C s přesností 0.5 % a vlhkosti v rozmezí od 20 do 95 % s přesností 5 %. Přesnost měření vlhkosti je ale závislá na vlhkosti samotné a na teplotě (přesnější data uvedena v datasheetu).
 
 
-### MG135  
+### MQ135  
 MQ-135 je plynový senzor určený k detekci různých škodlivých plynů, jako je amoniak, oxidy dusíku, benzen, kouř, alkohol, CO₂... Pracuje na principu změny odporu materiálu v závislosti na koncentraci plynů ve vzduchu, není tedy jednoduše určitelné, o jaký typ plynu se jedná. Modul umožňuje jak analogové měření aktuální koncentrace plynů na odporovém děliči, tak i digitální varování přes zabudovaný komparátor s nastavitelnou komparační úrovní. Jeho nevýhodou pro testování je nutnost předehřívání, podle výrobce 24 h. Na následujícím obrázku je možné vidět zapojení modulu pro MQ135.
 
 ![](assets/MQ-135-schematic-diagram.png)
